@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.Iterator;
+
 /**
  * <p>
  * Class representing a path between nodes in a graph.
@@ -198,10 +200,31 @@ public class Path {
      * 
      * @return true if the path is valid, false otherwise.
      * 
-     * @deprecated Need to be implemented.
+
+    // Graph containing this path.
+    private final Graph graph;
+
+    // Origin of the path
+    private final Node origin;
+
+    // List of arcs in this path.
+    private final List<Arc> arcs;
      */
     public boolean isValid() {
-        // TODO:
+    	boolean rep = true;
+    	
+        java.util.Iterator<Arc> i = arcs.iterator();
+        Arc e;
+        
+        if(i.hasNext()) {
+        	e = i.next();
+        	if( e.getOrigin().compareTo(origin) )
+        		rep = false;
+        }
+        while(i.hasNext()) {
+        	
+        	
+        }
         return false;
     }
 
