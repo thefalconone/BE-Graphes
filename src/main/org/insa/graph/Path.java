@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.Iterator;
+//import javax.swing.text.html.HTMLDocument.Iterator;
 
 /**
  * <p>
@@ -32,12 +32,36 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        for(int i=0;i<nodes.size()-1;i++){
+    		
+    		List<Arc> Successors=nodes.get(i).getSuccessors();
+        	List<Arc> validSuccessors = new ArrayList<Arc>();
+        	
+    		for(int j=0;j<Successors.size();j++) {
+    			
+    			Arc a = Successors.get(j);
+    			if(a.getDestination().equals(nodes.get(i+1)))
+    				validSuccessors.add(a);
+    			
+    		}
+    		if(validSuccessors.size()==0)
+    			throw new IllegalArgumentException("path not valid");
+    			
+    		if(validSuccessors.size()==1)
+    			arcs.add(validSuccessors.get(0));
+    			
+    		else {
+				Arc temp = validSuccessors.get(0);
+    			for(int j=1;j<validSuccessors.size();j++)
+    				if(temp.getMinimumTravelTime()>validSuccessors.get(j).getMinimumTravelTime())
+    					temp=validSuccessors.get(j);
+    			arcs.add(temp);
+    		}
+    	}
         return new Path(graph, arcs);
     }
 
@@ -53,15 +77,39 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+    	List<Arc> arcs = new ArrayList<Arc>();
+    	for(int i=0;i<nodes.size()-1;i++){
+    		
+    		List<Arc> Successors=nodes.get(i).getSuccessors();
+        	List<Arc> validSuccessors = new ArrayList<Arc>();
+        	
+    		for(int j=0;j<Successors.size();j++) {
+    			
+    			Arc a = Successors.get(j);
+    			if(a.getDestination().equals(nodes.get(i+1)))
+    				validSuccessors.add(a);
+    			
+    		}
+    		if(validSuccessors.size()==0)
+    			throw new IllegalArgumentException("path not valid");
+    			
+    		if(validSuccessors.size()==1)
+    			arcs.add(validSuccessors.get(0));
+    			
+    		else {
+				Arc temp = validSuccessors.get(0);
+    			for(int j=1;j<validSuccessors.size();j++)
+    				if(temp.getLength()>validSuccessors.get(j).getLength())
+    					temp=validSuccessors.get(j);
+    			arcs.add(temp);
+    		}
+    	}
         return new Path(graph, arcs);
     }
-
+    
     /**
      * Concatenate the given paths.
      * 
@@ -203,26 +251,20 @@ public class Path {
      */
     
     public boolean isValid() {
+
+    	if(this.arcs.size() == 0)
+    		return true;
+
+    	if(this.arcs.size() == 1)
+    		return this.arcs.get(0).getOrigin().equals(this.origin);
     	
-        java.util.Iterator<Arc> i = arcs.iterator();
-        Arc e;
-        
-        if(i.hasNext()) {
-        	e = i.next();
-        	if( e.getOrigin().equals(this.origin) )
-        		return false;
-        }
-        else {
-	        Arc prece = i.next();
-	        
-	        while(i.hasNext()) {
-	        	e = i.next();
-	        	if( e.getOrigin().equals(prece.getDestination()))
-	        		return false;
-	        	prece=e;
-	        }
-        }
-        return true;
+    	else {
+	    	for(int i=1; i<this.arcs.size(); i++) {
+	    		if(! this.arcs.get(i-1).getDestination().equals(this.arcs.get(i).getOrigin()))
+	    			return false;
+	    	}
+    	}
+    	return true;
     }
 
     /**
