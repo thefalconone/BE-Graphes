@@ -200,32 +200,29 @@ public class Path {
      * 
      * @return true if the path is valid, false otherwise.
      * 
-
-    // Graph containing this path.
-    private final Graph graph;
-
-    // Origin of the path
-    private final Node origin;
-
-    // List of arcs in this path.
-    private final List<Arc> arcs;
      */
+    
     public boolean isValid() {
-    	boolean rep = true;
     	
         java.util.Iterator<Arc> i = arcs.iterator();
         Arc e;
         
         if(i.hasNext()) {
         	e = i.next();
-        	if( e.getOrigin().compareTo(origin) )
-        		rep = false;
+        	if( e.getOrigin().equals(this.origin) )
+        		return false;
         }
-        while(i.hasNext()) {
-        	
-        	
+        else {
+	        Arc prece = i.next();
+	        
+	        while(i.hasNext()) {
+	        	e = i.next();
+	        	if( e.getOrigin().equals(prece.getDestination()))
+	        		return false;
+	        	prece=e;
+	        }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -233,11 +230,19 @@ public class Path {
      * 
      * @return Total length of the path (in meters).
      * 
-     * @deprecated Need to be implemented.
-     */
+    **/
     public float getLength() {
-        // TODO:
-        return 0;
+        Arc e = null;
+        float longueur=0; 
+    	java.util.Iterator<Arc> i = arcs.iterator();
+    	while(i.hasNext())
+    	{
+    		e=i.next();
+    		longueur+=e.getLength();
+    		
+    	}
+        
+        return longueur;
     }
 
     /**
@@ -248,24 +253,36 @@ public class Path {
      * @return Time (in seconds) required to travel this path at the given speed (in
      *         kilometers-per-hour).
      * 
-     * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+    	Arc e = null;
+        double temps=0; 
+    	java.util.Iterator<Arc> i = arcs.iterator();
+    	while(i.hasNext())
+    	{
+    		e=i.next();
+    		temps+=e.getTravelTime(speed);
+    		
+    	}
+        return temps;
     }
-
     /**
      * Compute the time to travel this path if moving at the maximum allowed speed
      * on every arc.
      * 
      * @return Minimum travel time to travel this path (in seconds).
      * 
-     * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+    	Arc e = null;
+        double mintemps=0; 
+    	java.util.Iterator<Arc> i = arcs.iterator();
+    	while(i.hasNext())
+    	{
+    		e=i.next();
+    		mintemps+=e.getMinimumTravelTime();
+    	}
+        return mintemps;
     }
 
 }
