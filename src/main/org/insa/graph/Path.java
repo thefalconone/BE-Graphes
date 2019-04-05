@@ -62,7 +62,10 @@ public class Path {
     			arcs.add(temp);
     		}
     	}
-        return new Path(graph, arcs);
+        if(nodes.size()==1)
+    		return new Path(graph,nodes.get(0));
+    	else
+    		return new Path(graph, arcs);
     }
 
     /**
@@ -107,7 +110,10 @@ public class Path {
     			arcs.add(temp);
     		}
     	}
-        return new Path(graph, arcs);
+    	if(nodes.size()==1)
+    		return new Path(graph,nodes.get(0));
+    	else
+    		return new Path(graph, arcs);
     }
     
     /**

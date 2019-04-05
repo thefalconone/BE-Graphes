@@ -180,7 +180,7 @@ public class PathTest {
 
         // Trap construction!
         path = Path.createFastestPathFromNodes(graph, Arrays.asList(new Node[] { nodes[1] }));
-        //assertEquals(nodes[1], path.getOrigin());
+        assertEquals(nodes[1], path.getOrigin());
         assertEquals(0, path.getArcs().size());
 
         // Trap construction - The return!
@@ -215,7 +215,7 @@ public class PathTest {
 
         // Trap construction!
         path = Path.createShortestPathFromNodes(graph, Arrays.asList(new Node[] { nodes[1] }));
-        //assertEquals(nodes[1], path.getOrigin());
+        assertEquals(nodes[1], path.getOrigin());
         assertEquals(0, path.getArcs().size());
 
         // Trap construction - The return!
