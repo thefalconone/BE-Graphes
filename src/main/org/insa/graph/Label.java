@@ -33,6 +33,10 @@ public class Label {
 		return this.cout;
 	}
 	
+	public double getIdPere() {
+		return this.idPere;
+	}
+	
 	public void setMarque(boolean pMarque) {
 		this.marque=pMarque;
 	}
