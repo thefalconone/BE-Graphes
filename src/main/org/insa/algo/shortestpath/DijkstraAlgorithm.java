@@ -1,6 +1,5 @@
 package org.insa.algo.shortestpath;
 
-import java.awt.Label;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         List<Label> tab = new ArrayList<Label>();
         
         for(int i=0; i<g.size(); i++) {
-        	tab.add(new Label(g.get(i)));
+        	tab.add(new Label(i));
         }
         boolean fini = false;
         //on marque un sommet par cycle donc on fait tab.size() cycles
@@ -39,9 +38,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		//si la node n'est pas marquée
         		if( !tab.get(destId).getMarque() ) {
         			
-        			double nouv = tab.get(origId).getCost() + a.getMinimumTravelTime();
+        			double nouv = tab.get(origId).getCout() + a.getMinimumTravelTime();
                 	//si le cout du nouveau chemin est plus faible
-        			if( tab.get(destId).getCost() > nouv )
+        			if( tab.get(destId).getCout() > nouv )
         				tab.set(destId, new Label(destId, nouv, false, a));
         		}
         	}
