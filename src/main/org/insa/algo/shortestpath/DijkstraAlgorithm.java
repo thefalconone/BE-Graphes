@@ -1,6 +1,6 @@
 package org.insa.algo.shortestpath;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.insa.graph.*;
@@ -16,53 +16,69 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     protected ShortestPathSolution doRun() {
         ShortestPathData data = getInputData();
         Graph g = data.getGraph();
+        AbstractSolution.Status status = AbstractSolution.Status.FEASIBLE;
         
-        AbstractSolution.Status status = AbstractSolution.Status.INFEASIBLE;
         Node n = data.getOrigin();
         List<Label> tab = new ArrayList<Label>();
         
         for(int i=0; i<g.size(); i++) {
-        	tab.add(new Label(i));
+        	tab.add(new Label(i,Double.POSITIVE_INFINITY));
         }
+        
+        tab.set(n.getId(),new Label(n.getId(),0));
+        
         boolean fini = false;
         //on marque un sommet par cycle donc on fait tab.size() cycles
         while(!fini) {
-        	
-            List<Arc> succ = n.getSuccessors();
-        	for(int i=0; i<succ.size(); i++) {
-        		
-        		Arc a = succ.get(i);
-        		int destId = a.getDestination().getId();
-        		int origId = a.getOrigin().getId();
-        		
-        		//si la node n'est pas marquée
-        		if( !tab.get(destId).getMarque() ) {
-        			
-        			double nouv = tab.get(origId).getCout() + a.getMinimumTravelTime();
-                	//si le cout du nouveau chemin est plus faible
-        			if( tab.get(destId).getCout() > nouv )
-        				tab.set(destId, new Label(destId, nouv, false, a));
+        	double min=Double.POSITIVE_INFINITY;
+        	int minId=-1;
+        	for(int i=0;i<tab.size();i++) {
+        		if(!tab.get(i).getMarque() && min>tab.get(i).getCout()) {
+        			min=tab.get(i).getCout();
+        			minId=i;
         		}
+        		
         	}
-        	tab.get(n.getId()).setMarque(true);
-        	if(n.equals(data.getDestination()))
-        		fini = true;
+        	if(minId==-1) {
+        		fini=true;
+                status = AbstractSolution.Status.INFEASIBLE;
+        	}
+        	else {
+        		notifyNodeReached(n);
+	        	n=g.get(minId);
+	        	tab.get(n.getId()).setMarque(true);
+	        	
+	            List<Arc> succ = n.getSuccessors();
+	        	for(int i=0; i<succ.size(); i++) {
+	        		
+	        		Arc a = succ.get(i);
+	        		int destId = a.getDestination().getId();
+	        		int origId = a.getOrigin().getId();
+	        		
+	        		//si la node n'est pas marquée
+	        		if( !tab.get(destId).getMarque() ) {
+	        			
+	        			double nouv = tab.get(origId).getCout() + a.getMinimumTravelTime();
+	                	//si le cout du nouveau chemin est plus faible
+	        			if( tab.get(destId).getCout() > nouv )
+	        				tab.set(destId, new Label(destId, nouv, false, a));
+	        		}
+	        	}
+	        	if(n.equals(data.getDestination()))
+	        		fini = true;
+        	}
         }
         
         List<Arc> chemin = new ArrayList<Arc>();
         
-        while(n.getId() == tab.get(n.getId()).getId() ){
+        while( !n.equals(data.getOrigin()) ){
         	Arc a = tab.get(n.getId()).getArc();
         	chemin.add(a);
         	n = a.getOrigin();
         }
-        
-        int size = chemin.size();
-        for(int i=0; i<size/2; i++) {
-        	chemin.set(i, chemin.get(size-i));
-        }
+        Collections.reverse(chemin);
 
-        Path p = new Path(g, n);
+        Path p = new Path(g, chemin);
         ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
         return solution;
     }

@@ -9,10 +9,10 @@ public class Label {
 	private Arc arcPere;
 	
 
-	public Label (int pCourant) {
+	public Label (int pCourant, double pCout) {
 		this.idCourant=pCourant;
 		this.marque=false;
-		this.cout=Double.POSITIVE_INFINITY;
+		this.cout=pCout;
 		this.idPere=0;
 		this.arcPere=null;
 	}
