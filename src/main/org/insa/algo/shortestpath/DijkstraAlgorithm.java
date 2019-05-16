@@ -19,6 +19,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         AbstractSolution.Status status = AbstractSolution.Status.FEASIBLE;
         
         Node n = data.getOrigin();
+        
+        if(n.equals(data.getDestination())) {//si origine = destination
+        	Path p = new Path(g, n);
+            status = AbstractSolution.Status.INFEASIBLE;
+            ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
+            return solution;
+        }
+        
         List<Label> tab = new ArrayList<Label>();
         
         for(int i=0; i<g.size(); i++) {
@@ -58,7 +66,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	        		//si la node n'est pas marquée
 	        		if( !tab.get(destId).getMarque() ) {
 	        			
-	        			double nouv = tab.get(origId).getCout() + a.getMinimumTravelTime();
+	        			double nouv = tab.get(origId).getCout() + getCost(a);
 	                	//si le cout du nouveau chemin est plus faible
 	        			if( tab.get(destId).getCout() > nouv )
 	        				tab.set(destId, new Label(destId, nouv, false, a));
@@ -81,6 +89,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Path p = new Path(g, chemin);
         ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
         return solution;
+    }
+    
+    public double getCost(Arc a) {
+    	if(data.getMode().equals(AbstractInputData.Mode.LENGTH))
+    		return (double)a.getLength();
+    	else
+    		return a.getMinimumTravelTime();
     }
 
 }
