@@ -35,6 +35,7 @@ public class DijkstraAlgorithmTest{
 
         // 0 = LENGTH		2 = TIME
         
+        /*-------------------------------------------------------------------------------*/
         System.out.println("Test map carre et chemin valide en longueur");
     	ShortestPathData data = new ShortestPathData(graphCarre, graphCarre.get(23), graphCarre.get(0), ArcInspectorFactory.getAllFilters().get(0));
 
@@ -58,6 +59,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assert SPSbf.getPath().getLength() == SPSa.getPath().getLength();
     	
+    	/*-------------------------------------------------------------------------------*/
     	System.out.println("Test map carre et chemin valide en temps");
     	data = new ShortestPathData(graphCarre, graphCarre.get(23), graphCarre.get(0), ArcInspectorFactory.getAllFilters().get(2));
 
@@ -81,6 +83,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assert SPSbf.getPath().getMinimumTravelTime() == SPSa.getPath().getMinimumTravelTime();
 
+    	/*-------------------------------------------------------------------------------*/
     	System.out.println("Test map guadeloupe et chemin valide en longueur");
         String mapNameGuad = "/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/guadeloupe.mapgr";
         reader = new BinaryGraphReader(
@@ -109,6 +112,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assert SPSbf.getPath().getLength() == SPSa.getPath().getLength();
     	
+    	/*-------------------------------------------------------------------------------*/
     	System.out.println("Test map guadeloupe et chemin valide en temps");
     	data = new ShortestPathData(graphGuad, graphGuad.get(3205), graphGuad.get(21416), ArcInspectorFactory.getAllFilters().get(2));
 
@@ -132,6 +136,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assert SPSbf.getPath().getMinimumTravelTime() == SPSa.getPath().getMinimumTravelTime();
         
+    	/*-------------------------------------------------------------------------------*/
     	System.out.println("Test map guadeloupe et chemin pas valide");
     	data = new ShortestPathData(graphGuad, graphGuad.get(14958), graphGuad.get(7749), ArcInspectorFactory.getAllFilters().get(0));
 
@@ -143,7 +148,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assertEquals(AbstractSolution.Status.INFEASIBLE, SPSa.getStatus());
     	
-
+    	/*-------------------------------------------------------------------------------*/
     	System.out.println("Test map guadeloupe et chemin de longueur nulle");
     	data = new ShortestPathData(graphGuad, graphGuad.get(14958), graphGuad.get(14958), ArcInspectorFactory.getAllFilters().get(0));
 
@@ -156,6 +161,7 @@ public class DijkstraAlgorithmTest{
     	System.out.println("		-AStar");
     	assertEquals(AbstractSolution.Status.INFEASIBLE, SPSa.getStatus());
     	assertTrue(SPSa.getPath().isValid());
+    	/*-------------------------------------------------------------------------------*/
     }
     
     private ShortestPathSolution runDijkstra(ShortestPathData data) {

@@ -9,6 +9,7 @@ import org.insa.algo.AbstractSolution;
 import org.insa.algo.utils.BinaryHeap;
 import org.insa.graph.Arc;
 import org.insa.graph.Graph;
+import org.insa.graph.GraphStatistics;
 import org.insa.graph.LabelStar;
 import org.insa.graph.Label;
 import org.insa.graph.Node;
@@ -20,7 +21,8 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     public AStarAlgorithm(ShortestPathData data) {
         super(data);
     }
-
+    Point pointDest;
+    int Vmax=GraphStatistics.NO_MAXIMUM_SPEED;
     @Override
     protected ShortestPathSolution doRun() {
         ShortestPathData data = getInputData();
@@ -38,8 +40,10 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
 
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         ArrayList<LabelStar> tab = new ArrayList<LabelStar>();
-        Point pointDest = data.getDestination().getPoint();
+        
+        pointDest = data.getDestination().getPoint();
         double volOiseau = n.getPoint().distanceTo(pointDest);
+        Vmax = g.getGraphInformation().getMaximumSpeed();
         
         for(int i=0; i<g.size(); i++) {
         	tab.add(new LabelStar(i, Double.POSITIVE_INFINITY, volOiseau));
@@ -73,7 +77,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
 	        		if(!dest.getMarque()) {
 		        		
 	        			//cout depuis l'origine + cout arc + cout vers la dest
-	        			double nouvCout = orig.getCost() + getCost(a) + a.getDestination().getPoint().distanceTo(pointDest);
+	        			double nouvCout = orig.getCost() + getCost(a) + getCostDest(a);
 	                	//si le cout du nouveau chemin est plus faible
 	        			if( dest.getTotalCost() > nouvCout ) {
 	        				LabelStar nouv = tab.get(dest.getId());
@@ -102,11 +106,36 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
         return solution;
     }
-    
+
     public double getCost(Arc a) {
     	if(data.getMode().equals(AbstractInputData.Mode.LENGTH))
     		return (double)a.getLength();
     	else
     		return a.getMinimumTravelTime();
     }
+    
+    public double getCostDest(Arc a) {
+    	//distance en mètres
+    	double distance = a.getDestination().getPoint().distanceTo(pointDest);
+    	
+    	//si on vaut la distance
+    	if(data.getMode().equals(AbstractInputData.Mode.LENGTH))
+    		return distance;
+    	
+    	//si on veut la vitesse
+    	//Vmax en kmh
+    	if(Vmax == GraphStatistics.NO_MAXIMUM_SPEED)
+    		Vmax = 130;
+    	//vitesse en m/s
+    	double vitesse = Vmax/3.6;
+    	return distance*vitesse;
+    }
 }
+
+
+
+
+
+
+
+

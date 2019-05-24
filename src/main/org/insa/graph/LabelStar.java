@@ -1,6 +1,6 @@
 package org.insa.graph;
 
-public class LabelStar extends Label{
+public class LabelStar extends Label implements Comparable<Label>{
 
 	private double coutDest;
 	
