@@ -73,7 +73,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
 	        		if(!dest.getMarque()) {
 		        		
 	        			//cout depuis l'origine + cout arc + cout vers la dest
-	        			double nouvCout = orig.getCost() + getCost(a) + n.getPoint().distanceTo(pointDest);
+	        			double nouvCout = orig.getCost() + getCost(a) + a.getDestination().getPoint().distanceTo(pointDest);
 	                	//si le cout du nouveau chemin est plus faible
 	        			if( dest.getTotalCost() > nouvCout ) {
 	        				LabelStar nouv = tab.get(dest.getId());
