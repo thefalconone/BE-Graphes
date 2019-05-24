@@ -1,11 +1,10 @@
 package org.insa.graph;
 
-public class Label {
+public class Label implements Comparable<Label>{
 
 	private int idCourant;
 	private double cout;
 	private boolean marque;
-	private int idPere;
 	private Arc arcPere;
 	
 
@@ -13,20 +12,15 @@ public class Label {
 		this.idCourant=pCourant;
 		this.marque=false;
 		this.cout=pCout;
-		this.idPere=0;
 		this.arcPere=null;
-	}
-	
-	public Label (int pCourant, double pCout, boolean pMarque, Arc pArcPere) {
-		this.idCourant=pCourant;
-		this.cout=pCout;
-		this.marque=pMarque;
-		this.arcPere=pArcPere;
-		this.idPere=this.arcPere.getOrigin().getId();
 	}
 	
 	public Arc getArc() {
 		return this.arcPere;
+	}
+	
+	public void setPere(Arc a) {
+		this.arcPere=a;
 	}
 	
 	public boolean getMarque() {
@@ -36,18 +30,34 @@ public class Label {
 	public int getId() {
 		return this.idCourant;
 	}
-	
-	public double getCout() {
+
+	public double getCost() {
 		return this.cout;
 	}
 	
-	public double getIdPere() {
-		return this.idPere;
+	public double getTotalCost() {
+		return this.cout;
+	}
+	
+	public void setCost(double cout) {
+		this.cout=cout;
 	}
 	
 	public void setMarque(boolean pMarque) {
 		this.marque=pMarque;
 	}
 	
-	
+	public int compareTo(Label l) {
+		int result=0;
+		//this is less than object
+		if(this.cout < l.getCost())
+			result = -1;
+		//this is equal to object
+		if(this.cout == l.getCost())
+			result = 0;
+		//this is greater than object
+		if(this.cout > l.getCost())
+			result = 1;
+		return result;
+	}
 }

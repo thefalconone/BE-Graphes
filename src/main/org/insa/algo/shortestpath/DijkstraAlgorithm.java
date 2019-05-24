@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.insa.graph.*;
 import org.insa.algo.*;
+import org.insa.algo.utils.BinaryHeap;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
@@ -26,50 +27,50 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
             return solution;
         }
-        
-        List<Label> tab = new ArrayList<Label>();
+
+        BinaryHeap<Label> tas = new BinaryHeap<Label>();
+        ArrayList<Label> tab = new ArrayList<Label>();
         
         for(int i=0; i<g.size(); i++) {
-        	tab.add(new Label(i,Double.POSITIVE_INFINITY));
+        	tab.add(new Label(i, Double.POSITIVE_INFINITY));
         }
-        
-        tab.set(n.getId(),new Label(n.getId(),0));
+    	tas.insert(new Label(n.getId(),0));
         
         boolean fini = false;
-        //on marque un sommet par cycle donc on fait tab.size() cycles
+        //on marque un sommet par cycle donc on fait tab.size() cycles max
         while(!fini) {
-        	double min=Double.POSITIVE_INFINITY;
-        	int minId=-1;
-        	for(int i=0;i<tab.size();i++) {
-        		if(!tab.get(i).getMarque() && min>tab.get(i).getCout()) {
-        			min=tab.get(i).getCout();
-        			minId=i;
-        		}
-        		
-        	}
-        	if(minId==-1) {
+        	//si on a tout exploré sans rien trouver
+        	if(tas.isEmpty()) {
         		fini=true;
                 status = AbstractSolution.Status.INFEASIBLE;
         	}
         	else {
+        		//label avec le cout min
+            	Label orig = tas.deleteMin();
         		notifyNodeReached(n);
-	        	n=g.get(minId);
-	        	tab.get(n.getId()).setMarque(true);
+	        	n=g.get(orig.getId());
+	        	//on marque le sommet
+	        	tab.get(orig.getId()).setMarque(true);
 	        	
 	            List<Arc> succ = n.getSuccessors();
+	            
 	        	for(int i=0; i<succ.size(); i++) {
 	        		
 	        		Arc a = succ.get(i);
-	        		int destId = a.getDestination().getId();
-	        		int origId = a.getOrigin().getId();
-	        		
+	        		Label dest = tab.get(a.getDestination().getId());
+
 	        		//si la node n'est pas marquée
-	        		if( !tab.get(destId).getMarque() ) {
-	        			
-	        			double nouv = tab.get(origId).getCout() + getCost(a);
+	        		if(!dest.getMarque()) {
+		        		
+	        			double nouvCout = orig.getTotalCost() + getCost(a);
 	                	//si le cout du nouveau chemin est plus faible
-	        			if( tab.get(destId).getCout() > nouv )
-	        				tab.set(destId, new Label(destId, nouv, false, a));
+	        			if( dest.getTotalCost() > nouvCout ) {
+	        				Label nouv = tab.get(dest.getId());
+	        				nouv.setCost(nouvCout);
+        					nouv.setPere(a);
+        					tas.insert(nouv);
+        					
+	        			}
 	        		}
 	        	}
 	        	if(n.equals(data.getDestination()))
@@ -97,5 +98,4 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     	else
     		return a.getMinimumTravelTime();
     }
-
 }
