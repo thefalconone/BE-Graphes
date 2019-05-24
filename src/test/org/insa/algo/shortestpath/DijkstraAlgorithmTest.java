@@ -12,12 +12,14 @@ import static org.junit.Assert.assertTrue;
 import org.insa.algo.AbstractSolution;
 import org.insa.algo.ArcInspectorFactory;
 import org.insa.graph.Graph;
-import org.insa.graph.Point;
 import org.insa.graph.io.BinaryGraphReader;
 import org.insa.graph.io.GraphReader;
 
 public class DijkstraAlgorithmTest{
 
+	private DijkstraAlgorithm Dj;
+	private BellmanFordAlgorithm Bf;
+	private AStarAlgorithm AStar;
     @Test
     public void testDoRun() throws Exception {
 
@@ -33,105 +35,165 @@ public class DijkstraAlgorithmTest{
 
         // 0 = LENGTH		2 = TIME
         
-        //map carre et chemin valide longueur
+        System.out.println("Test map carre et chemin valide en longueur");
     	ShortestPathData data = new ShortestPathData(graphCarre, graphCarre.get(23), graphCarre.get(0), ArcInspectorFactory.getAllFilters().get(0));
-    	DijkstraAlgorithm Dj = new DijkstraAlgorithm(data);
-    	ShortestPathSolution SPS = Dj.doRun();
-    	BellmanFordAlgorithm Bf = new BellmanFordAlgorithm(data);
-    	ShortestPathSolution SPSbf = Bf.doRun();
 
-    	//chemin trouvé
+    	ShortestPathSolution SPSbf = runBellmanFord(data);
+    	ShortestPathSolution SPS = runDijkstra(data);
+    	ShortestPathSolution SPSa = runAStar(data);
+
+    	System.out.println("	chemin trouvé");
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.FEASIBLE, SPS.getStatus());
-    	//chamin valide
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.FEASIBLE, SPSa.getStatus());
+    	System.out.println("	chamin valide");
+    	System.out.println("		-Dijkstra");
     	assertTrue(SPS.getPath().isValid());
-    	//chemin bellman aussi long que chemin dijkstra
+    	System.out.println("		-AStar");
+    	assertTrue(SPSa.getPath().isValid());
+    	System.out.println("	chemin bellman de même longueur que chemin dijkstra");
+    	System.out.println("		-Dijkstra");
     	assert SPSbf.getPath().getLength() == SPS.getPath().getLength();
-    	//La solution est optimale ??
-    	Point origine = graphCarre.get(23).getPoint();
-    	Point desti = graphCarre.get(0).getPoint();
-     	double volOiseau = origine.distanceTo(desti);
-     	if(SPS.getPath().getLength()>2*volOiseau)
-     		System.out.println("Solution pas optimale");
+    	System.out.println("		-AStar");
+    	assert SPSbf.getPath().getLength() == SPSa.getPath().getLength();
     	
-        //map carre et chemin valide temps
+    	System.out.println("Test map carre et chemin valide en temps");
     	data = new ShortestPathData(graphCarre, graphCarre.get(23), graphCarre.get(0), ArcInspectorFactory.getAllFilters().get(2));
-    	Dj = new DijkstraAlgorithm(data);
-    	SPS = Dj.doRun();
-    	Bf = new BellmanFordAlgorithm(data);
-    	SPSbf = Bf.doRun();
 
-    	//chemin trouvé
+    	SPSbf = runBellmanFord(data);
+    	SPS = runDijkstra(data);
+    	SPSa = runAStar(data);
+
+    	System.out.println("	chemin trouvé");
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.FEASIBLE, SPS.getStatus());
-    	//chamin valide
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.FEASIBLE, SPSa.getStatus());
+    	System.out.println("	chamin valide");
+    	System.out.println("		-Dijkstra");
     	assertTrue(SPS.getPath().isValid());
-    	//chemin bellman aussi long que chemin dijkstra
+    	System.out.println("		-AStar");
+    	assertTrue(SPSa.getPath().isValid());
+    	System.out.println("	chemin bellman de même temps que chemin dijkstra");
+    	System.out.println("		-Dijkstra");
     	assert SPSbf.getPath().getMinimumTravelTime() == SPS.getPath().getMinimumTravelTime();
-    	//La solution est optimale ??
-    	origine = graphCarre.get(23).getPoint();
-    	desti = graphCarre.get(0).getPoint();
-     	volOiseau = origine.distanceTo(desti);
-     	if(SPS.getPath().getLength()>2*volOiseau)
-     		System.out.println("Solution pas optimale");
+    	System.out.println("		-AStar");
+    	assert SPSbf.getPath().getMinimumTravelTime() == SPSa.getPath().getMinimumTravelTime();
 
-        //map guadeloupe et chemin valide longueur
+    	System.out.println("Test map guadeloupe et chemin valide en longueur");
         String mapNameGuad = "/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/guadeloupe.mapgr";
         reader = new BinaryGraphReader(
                 new DataInputStream(new BufferedInputStream(new FileInputStream(mapNameGuad))));
         Graph graphGuad = reader.read();
         
     	data = new ShortestPathData(graphGuad, graphGuad.get(3205), graphGuad.get(21416), ArcInspectorFactory.getAllFilters().get(0));
-    	Dj = new DijkstraAlgorithm(data);
-    	SPS = Dj.doRun();
-    	Bf = new BellmanFordAlgorithm(data);
-    	SPSbf = Bf.doRun();
 
-    	//chemin trouvé
+    	SPSbf = runBellmanFord(data);
+    	SPS = runDijkstra(data);
+    	SPSa = runAStar(data);
+
+    	System.out.println("	chemin trouvé");
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.FEASIBLE, SPS.getStatus());
-    	//chamin valide
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.FEASIBLE, SPSa.getStatus());
+    	System.out.println("	chemin valide");
+    	System.out.println("		-Dijkstra");
     	assertTrue(SPS.getPath().isValid());
-    	//chemin bellman aussi long que chemin dijkstra
-    	assert SPSbf.getPath().getMinimumTravelTime() == SPS.getPath().getMinimumTravelTime();
-    	//La solution est optimale ??
-    	origine = graphGuad.get(3205).getPoint();
-    	desti = graphGuad.get(21416).getPoint();
-     	volOiseau = origine.distanceTo(desti);
-     	if(SPS.getPath().getLength()>2*volOiseau)
-     		System.out.println("Solution pas optimale");
+    	System.out.println("		-AStar");
+    	assertTrue(SPSa.getPath().isValid());
+    	System.out.println("	chemin bellman de même longueur que chemin dijkstra");
+    	System.out.println("		-Dijkstra");
+    	assert SPSbf.getPath().getLength() == SPS.getPath().getLength();
+    	System.out.println("		-AStar");
+    	assert SPSbf.getPath().getLength() == SPSa.getPath().getLength();
     	
-        //map guadeloupe et chemin valide temps
+    	System.out.println("Test map guadeloupe et chemin valide en temps");
     	data = new ShortestPathData(graphGuad, graphGuad.get(3205), graphGuad.get(21416), ArcInspectorFactory.getAllFilters().get(2));
-    	Dj = new DijkstraAlgorithm(data);
-    	SPS = Dj.doRun();
-    	Bf = new BellmanFordAlgorithm(data);
-    	SPSbf = Bf.doRun();
 
-    	//chemin trouvé
+    	SPSbf = runBellmanFord(data);
+    	SPS = runDijkstra(data);
+    	SPSa = runAStar(data);
+
+    	System.out.println("	chemin trouvé");
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.FEASIBLE, SPS.getStatus());
-    	//chamin valide
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.FEASIBLE, SPSa.getStatus());
+    	System.out.println("	chemin valide");
+    	System.out.println("		-Dijkstra");
     	assertTrue(SPS.getPath().isValid());
-    	//chemin bellman aussi long que chemin dijkstra
+    	System.out.println("		-AStar");
+    	assertTrue(SPSa.getPath().isValid());
+    	System.out.println("	chemin bellman de même temps que chemin dijkstra");
+    	System.out.println("		-Dijkstra");
     	assert SPSbf.getPath().getMinimumTravelTime() == SPS.getPath().getMinimumTravelTime();
-    	//La solution est optimale ??
-    	origine = graphGuad.get(3205).getPoint();
-    	desti = graphGuad.get(21416).getPoint();
-     	volOiseau = origine.distanceTo(desti);
-     	if(SPS.getPath().getLength()>2*volOiseau)
-     		System.out.println("Solution pas optimale");
+    	System.out.println("		-AStar");
+    	assert SPSbf.getPath().getMinimumTravelTime() == SPSa.getPath().getMinimumTravelTime();
         
-        //map guadeloupe et chemin pas valide
+    	System.out.println("Test map guadeloupe et chemin pas valide");
     	data = new ShortestPathData(graphGuad, graphGuad.get(14958), graphGuad.get(7749), ArcInspectorFactory.getAllFilters().get(0));
-    	Dj = new DijkstraAlgorithm(data);
-    	SPS = Dj.doRun();
 
+    	SPS = runDijkstra(data);
+    	SPSa = runAStar(data);
+
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.INFEASIBLE, SPS.getStatus());
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.INFEASIBLE, SPSa.getStatus());
     	
-    	
-        //map guadeloupe et chemin de longueur nulle
-    	data = new ShortestPathData(graphGuad, graphGuad.get(14958), graphGuad.get(14958), ArcInspectorFactory.getAllFilters().get(0));
-    	Dj = new DijkstraAlgorithm(data);
-    	SPS = Dj.doRun();
 
+    	System.out.println("Test map guadeloupe et chemin de longueur nulle");
+    	data = new ShortestPathData(graphGuad, graphGuad.get(14958), graphGuad.get(14958), ArcInspectorFactory.getAllFilters().get(0));
+
+    	SPS = runDijkstra(data);
+    	SPSa = runAStar(data);
+    	
+    	System.out.println("		-Dijkstra");
     	assertEquals(AbstractSolution.Status.INFEASIBLE, SPS.getStatus());
     	assertTrue(SPS.getPath().isValid());
+    	System.out.println("		-AStar");
+    	assertEquals(AbstractSolution.Status.INFEASIBLE, SPSa.getStatus());
+    	assertTrue(SPSa.getPath().isValid());
+    }
+    
+    private ShortestPathSolution runDijkstra(ShortestPathData data) {
+
+    	Dj = new DijkstraAlgorithm(data);
+    	
+    	long startTime = System.currentTimeMillis();
+    	ShortestPathSolution SPS = Dj.doRun();
+    	long endTime = System.currentTimeMillis();
+
+    	System.out.println("	Dijkstra en " + (endTime - startTime) + " millisecondes");
+    	
+    	return SPS;
+    }
+    
+    private ShortestPathSolution runBellmanFord(ShortestPathData data) {
+
+    	Bf = new BellmanFordAlgorithm(data);
+    	
+    	long startTime = System.currentTimeMillis();
+    	ShortestPathSolution SPS = Bf.doRun();
+    	long endTime = System.currentTimeMillis();
+
+    	System.out.println("	Bellman-Ford en " + (endTime - startTime) + " millisecondes");
+    	
+    	return SPS;
+    }
+    
+    private ShortestPathSolution runAStar(ShortestPathData data) {
+
+    	AStar = new AStarAlgorithm(data);
+    	
+    	long startTime = System.currentTimeMillis();
+    	ShortestPathSolution SPS = AStar.doRun();
+    	long endTime = System.currentTimeMillis();
+
+    	System.out.println("	A* en " + (endTime - startTime) + " millisecondes");
+    	
+    	return SPS;
     }
 }
