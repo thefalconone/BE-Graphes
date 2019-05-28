@@ -1,13 +1,33 @@
 package org.insa.graph;
 
+import org.insa.algo.AbstractInputData;
+import org.insa.algo.shortestpath.ShortestPathData;
+
 public class LabelStar extends Label implements Comparable<Label>{
 
 	private double coutDest;
 	
-	public LabelStar (int pCourant, double pCout, double coutDest) {
-		super(pCourant, pCout);
-		this.coutDest=coutDest;
+	public LabelStar (Node n, ShortestPathData data, double cout) {
+		super(n, data, cout);
 		
+		int Vmax=data.getGraph().getGraphInformation().getMaximumSpeed();
+		
+		//distance en mètres
+    	double distance = data.getOrigin().getPoint().distanceTo(n.getPoint());
+    	
+    	//si on vaut la distance
+    	if(data.getMode().equals(AbstractInputData.Mode.LENGTH))
+    		this.coutDest=distance;
+    	
+    	//si on veut la vitesse
+    	else {
+	    	//Vmax en kmh
+	    	if( Vmax == GraphStatistics.NO_MAXIMUM_SPEED)
+	    		Vmax = 130;
+	    	//vitesse en m/s
+	    	double vitesse = Vmax/3.6;
+	    	this.coutDest=distance*vitesse;
+    	}
 	}
 
 	public double getTotalCost() {
@@ -16,9 +36,6 @@ public class LabelStar extends Label implements Comparable<Label>{
 
 	private double getCostDest() {
 		return this.coutDest;
-	}
-	public void setCostDest(double coutDest) {
-		this.coutDest = coutDest;
 	}
 	
 	public int compareTo(LabelStar l) {

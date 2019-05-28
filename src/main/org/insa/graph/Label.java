@@ -1,50 +1,52 @@
 package org.insa.graph;
 
+import org.insa.algo.shortestpath.ShortestPathData;
+
 public class Label implements Comparable<Label>{
 
-	private int idCourant;
+	private Node n;
 	private double cout;
 	private boolean marque;
-	private Arc arcPere;
+	private Arc pere;
 	
 
-	public Label (int pCourant, double pCout) {
-		this.idCourant=pCourant;
+	public Label (Node n, ShortestPathData data, double cout) {
+		this.n=n;
 		this.marque=false;
-		this.cout=pCout;
-		this.arcPere=null;
+		this.cout=cout;
+		this.pere=null;
 	}
 	
-	public Arc getArc() {
-		return this.arcPere;
+	public Arc getPere() {
+		return this.pere;
 	}
 	
 	public void setPere(Arc a) {
-		this.arcPere=a;
+		this.pere=a;
 	}
 	
 	public boolean getMarque() {
 		return this.marque;
 	}
 	
-	public int getId() {
-		return this.idCourant;
+	public void setMarque(boolean pMarque) {
+		this.marque=pMarque;
+	}
+	
+	public Node getNode() {
+		return this.n;
 	}
 
 	public double getCost() {
 		return this.cout;
 	}
 	
-	public double getTotalCost() {
-		return this.cout;
-	}
-	
 	public void setCost(double cout) {
 		this.cout=cout;
 	}
-	
-	public void setMarque(boolean pMarque) {
-		this.marque=pMarque;
+
+	public double getTotalCost() {
+		return this.cout;
 	}
 	
 	public int compareTo(Label l) {
