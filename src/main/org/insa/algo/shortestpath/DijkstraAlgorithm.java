@@ -15,6 +15,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
     @Override
     protected ShortestPathSolution doRun() {
+    	//chronométrage
+    	long startTime = System.currentTimeMillis();
+    	//nb iterations
+    	int nb=0;
+    	
         ShortestPathData data = getInputData();
         Graph g = data.getGraph();
         AbstractSolution.Status status = AbstractSolution.Status.FEASIBLE;
@@ -30,6 +35,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         ArrayList<Label> tab = new ArrayList<Label>();
+        
         
         for(int i=0; i<g.size(); i++) {
         	tab.add(creerLabel(g.get(i), data, Double.POSITIVE_INFINITY));
@@ -65,13 +71,15 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	        			double nouvCout = l.getCost() + data.getCost(a);
 	                	//si le cout du nouveau chemin est plus faible
 	        			if( dest.getCost() > nouvCout ) {
-	        				Label nouv = tab.get(dest.getNode().getId());
-	        				nouv.setCost(nouvCout);
+	        				Label nouv = creerLabel(dest.getNode(), data, nouvCout);
         					nouv.setPere(a);
         					tas.insert(nouv);
+        					tab.set(dest.getNode().getId(), nouv);
+        					//System.out.println("node " + nouv.getNode().getId() + "  cout " + nouv.getCost() + "  cout total " + nouv.getTotalCost());
         					
 	        			}
 	        		}
+	        		nb++;
 	        	}
 	        	if(orig.equals(data.getDestination()))
 	        		fini = true;
@@ -89,6 +97,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         Path p = new Path(g, chemin);
         ShortestPathSolution solution = new ShortestPathSolution(data, status, p);
+        
+        //fin chronométrage
+    	long endTime = System.currentTimeMillis();
+
+    	System.out.println("graph : 	nb arcs=" + g.getGraphInformation().getArcCount() + "	nb routes=" + (g.getGraphInformation().getTwoWaysRoadCount() + g.getGraphInformation().getOneWayRoadCount()));
+    	
+    	System.out.println(this.getClass() + "	nb iter=" + nb + "	temps=" + (endTime - startTime) + " millisecondes");
+        
         return solution;
     }
     

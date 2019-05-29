@@ -52,13 +52,13 @@ public class Label implements Comparable<Label>{
 	public int compareTo(Label l) {
 		int result=0;
 		//this is less than object
-		if(this.cout < l.getCost())
+		if(this.getTotalCost() < l.getTotalCost())
 			result = -1;
 		//this is equal to object
-		if(this.cout == l.getCost())
+		else if(this.getTotalCost() == l.getTotalCost())
 			result = 0;
 		//this is greater than object
-		if(this.cout > l.getCost())
+		else
 			result = 1;
 		return result;
 	}
